@@ -4,6 +4,8 @@ package com.example.demo.dao;
 
 
 
+import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +15,5 @@ public interface AuthDao extends CrudRepository<Auth, Integer>{
 
 	public boolean existsByUsername(String username);
 	public  boolean existsByPassword(String password);
+	public Optional<Auth> findByUsername(String username);
 }

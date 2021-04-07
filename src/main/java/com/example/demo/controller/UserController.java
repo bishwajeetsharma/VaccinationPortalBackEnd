@@ -19,20 +19,26 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin
 public class UserController {
 
 	@Autowired
 	private UserRegistrationService service;
-	
+
 	@PostMapping("/registeruser")
 	@ApiOperation(value = "API for Registering the Users to MRA portal", response = Details.class)
-	@CrossOrigin
-	public  ResponseEntity<Details> register(@RequestBody UserRegistration userreg)
-	{
+	public ResponseEntity<Details> register(@RequestBody UserRegistration userreg) {
 		service.registerUser(userreg);
-		
-		Details details=new Details(new Date(),"Registration successful","/registeruser");
-		return new ResponseEntity<Details>(details,HttpStatus.OK);
-		
+
+		Details details = new Details(new Date(), "Registration successful", "/user/registeruser");
+		return new ResponseEntity<Details>(details, HttpStatus.OK);
+
+	}
+
+	@RequestMapping("/dashboard")
+	@ApiOperation(value = "API for rendering user dashboard", response = Details.class)
+	public ResponseEntity<Details> dashboard() {
+		Details details = new Details(new Date(), "dasboard works", "/user/dashboard");
+		return new ResponseEntity<Details>(details, HttpStatus.OK);
 	}
 }
