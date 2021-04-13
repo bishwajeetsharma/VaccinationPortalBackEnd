@@ -19,7 +19,7 @@ public class Hospital {
 	private Integer id;
 	@Column(nullable=false)
 	private String name;
-	@Column(nullable=false,unique=true)
+	@Column(nullable=true,unique=true)
 	private String contactno;
 	
 	//many to many mapping with doctor
