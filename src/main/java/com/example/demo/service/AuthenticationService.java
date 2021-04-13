@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.model.AuthenticationResponse;
 import com.example.demo.model.LoginCredentials;
+
 import com.example.demo.utils.JwtUtils;
 import com.example.demo.utils.UserDetailsClass;
 
@@ -33,10 +34,11 @@ public class AuthenticationService {
 		final UserDetailsClass userDetails = userDetailsService.loadUserByUsername(credentials.getUsername());
 
 		final String jwt = jwtTokenUtil.generatetoken(userDetails);
-		if (userDetails.isEnabled())
-			return new AuthenticationResponse(userDetails.getUsername(), userDetails.getPassword(), jwt,
-					jwtTokenUtil.extractExpirartion(jwt).getTime());
-		else
+		if (userDetails.isEnabled()) {
+			return new AuthenticationResponse(userDetails.getFirstname(), userDetails.getLastname(),
+					userDetails.getId(), userDetails.getUsername(), userDetails.getPassword(), jwt,
+					jwtTokenUtil.extractExpirartion(jwt).getTime(),userDetails.getRole());
+		} else
 			throw new Exception("This account is inactive");
 	}
 }

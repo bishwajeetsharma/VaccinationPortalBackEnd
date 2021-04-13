@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Exception.Details;
-import com.example.demo.model.UserRegistration;
+import com.example.demo.model.AuthenticationResponse;
+import com.example.demo.model.LoginCredentials;
 import com.example.demo.model.VaccineRegistration;
+import com.example.demo.model.UserRegistration;
+import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.UserRegistrationService;
 import com.example.demo.service.VaccineBookingService;
 
@@ -30,9 +33,11 @@ import io.swagger.annotations.ApiOperation;
 public class UserController {
 
 	private static final Logger logger = LogManager.getLogger(UserController.class);
-
 	@Autowired
 	private UserRegistrationService service;
+
+	@Autowired
+	private AuthenticationService userAuthenticationService;
 	
 	@Autowired
 	private VaccineBookingService vaccineBookingService;
