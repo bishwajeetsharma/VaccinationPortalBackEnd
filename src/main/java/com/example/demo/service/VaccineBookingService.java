@@ -63,7 +63,7 @@ public class VaccineBookingService {
 					persistedVaccine.getName(), persistedVaccine.getId());
 			Doctor persistedDoc = doctorDao.findByRegNo(vaccineReg.getDocRegNo());
 			logger.info("Successfully fetched doctor details having reg no :: [{}] with doctor id :: [{}]",
-					persistedDoc.getRegNo(), persistedDoc.getDid());
+					persistedDoc.getRegNo(), persistedDoc.getId());
 			logger.info("Proceeding for booking of vaccine by the user :: [{}]", persistedUser.get().getId());
 			Random random = new Random();
 			long drand = (long) (random.nextDouble() * 10000000000L);

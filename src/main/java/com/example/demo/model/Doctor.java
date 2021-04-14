@@ -18,7 +18,7 @@ public class Doctor {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer did;
+	private Integer id;
 	@Column(nullable = false)
 	private String firstname;
 	@Column(nullable = false)
@@ -90,12 +90,14 @@ public class Doctor {
 		this.hospital = hospital;
 	}
 
-	public Integer getDid() {
-		return did;
+	
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setDid(Integer did) {
-		this.did = did;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getContactno() {
