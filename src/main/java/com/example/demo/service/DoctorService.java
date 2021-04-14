@@ -130,7 +130,7 @@ public class DoctorService {
 					location.getId(), location.getDoctor().size());
 			List<DoctorResponse> doctorsList = new ArrayList<DoctorResponse>();
 			for (Doctor d : location.getDoctor()) {
-				DoctorResponse docResp = new DoctorResponse(d.getDid(), d.getFirstname(), d.getLastname(),
+				DoctorResponse docResp = new DoctorResponse(d.getId(), d.getFirstname(), d.getLastname(),
 						d.getContactno(), d.getRegNo());
 				doctorsList.add(docResp);
 			}
