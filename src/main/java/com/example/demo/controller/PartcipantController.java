@@ -17,14 +17,16 @@ public class PartcipantController {
 
 	@Autowired
 	private ChatPartcipantService chatparticipantservice;
+
 	@RequestMapping("/doctor")
 	@CrossOrigin
 	public List<ChatPartcipant> fetchUsers() {
 		return (List<ChatPartcipant>) chatparticipantservice.fetchUsers();
 	}
+
 	@RequestMapping("/user")
 	@CrossOrigin
 	public List<ChatPartcipant> fetchDoctors() {
-		return (List<ChatPartcipant>) chatparticipantservice.fetchUsers();
+		return (List<ChatPartcipant>) chatparticipantservice.fetchDoctors();
 	}
 }

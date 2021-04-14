@@ -11,20 +11,20 @@ public class ChatMessage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private Long fromId;
-	private Long toId;
+	private Integer fromId;
+	private Integer toId;
 	private String message;
 	private Long date;
-	public Long getFromId() {
+	public Integer getFromId() {
 		return fromId;
 	}
-	public void setFromId(long fromId) {
+	public void setFromId(Integer fromId) {
 		this.fromId = fromId;
 	}
-	public Long getToId() {
+	public Integer getToId() {
 		return toId;
 	}
-	public void setToId(long toId) {
+	public void setToId(Integer toId) {
 		this.toId = toId;
 	}
 	public String getMessage() {
@@ -42,8 +42,8 @@ public class ChatMessage {
 	public void setDate(long date) {
 		this.date = date;
 	}
-	public ChatMessage(Long fromId, Long toId, String message, Long date) {
-		super();
+	public ChatMessage() {}
+	public ChatMessage(Integer fromId, Integer toId, String message, Long date) {
 		this.fromId = fromId;
 		this.toId = toId;
 		this.message = message;
