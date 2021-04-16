@@ -3,6 +3,8 @@
  */
 package com.example.demo.model;
 
+import java.sql.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,13 +46,13 @@ public class VaccineBooking {
 	private String status;
 
 	@Column(nullable = false)
-	private String bookingDate;
+	private Date bookingDate;
 
 	public VaccineBooking() {
 		super();
 	}
 
-	public VaccineBooking(String status, String bookingDate) {
+	public VaccineBooking(String status, Date bookingDate) {
 		this.status = status;
 		this.bookingDate = bookingDate;
 	}
@@ -103,11 +105,11 @@ public class VaccineBooking {
 		this.fileDb = fileDb;
 	}
 
-	public String getBookingDate() {
+	public Date getBookingDate() {
 		return bookingDate;
 	}
 
-	public void setBookingDate(String bookingDate) {
+	public void setBookingDate(Date bookingDate) {
 		this.bookingDate = bookingDate;
 	}
 

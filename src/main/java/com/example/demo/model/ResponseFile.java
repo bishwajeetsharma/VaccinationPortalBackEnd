@@ -3,6 +3,8 @@
  */
 package com.example.demo.model;
 
+import java.sql.Date;
+
 /**
  * @author PRATAP
  *
@@ -17,11 +19,13 @@ public class ResponseFile {
 	private String firstName;
 	private String lastName;
 	private String vaccine;
-	private String bookingDate;
+	private Date bookingDate;
+	private String userName;
 	private String status;
+	private int dosage;
 
 	public ResponseFile(int bookingId, String fileName, String url, String type, long size, String firstName,
-			String lastName, String vaccine, String bookingDate, String status) {
+			String lastName, String vaccine, Date bookingDate, String status, String userName, int dosage) {
 		this.bookingId = bookingId;
 		this.fileName = fileName;
 		this.url = url;
@@ -32,6 +36,8 @@ public class ResponseFile {
 		this.vaccine = vaccine;
 		this.bookingDate = bookingDate;
 		this.status = status;
+		this.userName = userName;
+		this.dosage = dosage;
 	}
 
 	public String getFileName() {
@@ -98,11 +104,11 @@ public class ResponseFile {
 		this.bookingId = bookingId;
 	}
 
-	public String getBookingDate() {
+	public Date getBookingDate() {
 		return bookingDate;
 	}
 
-	public void setBookingDate(String bookingDate) {
+	public void setBookingDate(Date bookingDate) {
 		this.bookingDate = bookingDate;
 	}
 
@@ -114,4 +120,19 @@ public class ResponseFile {
 		this.status = status;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public int getDosage() {
+		return dosage;
+	}
+
+	public void setDosage(int dosage) {
+		this.dosage = dosage;
+	}
 }

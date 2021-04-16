@@ -92,7 +92,8 @@ public class DoctorController {
 				return new ResponseFile(dbFile.getBookingId(), dbFile.getFileDb().getName(), fileDownloadUri,
 						dbFile.getFileDb().getType(), dbFile.getFileDb().getData().length,
 						dbFile.getUser().getFirstname(), dbFile.getUser().getLastname(), dbFile.getVaccine().getName(),
-						dbFile.getBookingDate(), dbFile.getStatus());
+						dbFile.getBookingDate(), dbFile.getStatus(), dbFile.getUser().getAuth().getUsername(),
+						dbFile.getVaccine().getDosage());
 			}).collect(Collectors.toList());
 			int i = 0;
 			for (ResponseFile file : files) {
