@@ -3,8 +3,9 @@
  */
 package com.example.demo.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
-import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -22,6 +23,7 @@ import com.example.demo.dao.VaccineBookingDao;
 import com.example.demo.dao.VaccineDao;
 import com.example.demo.model.Auth;
 import com.example.demo.model.Doctor;
+import com.example.demo.model.FileDB;
 import com.example.demo.model.User;
 import com.example.demo.model.Vaccine;
 import com.example.demo.model.VaccineBooking;
@@ -47,6 +49,8 @@ public class VaccineBookingService {
 	private VaccineDao vaccineDao;
 	@Autowired
 	private DoctorDao doctorDao;
+	@Autowired
+	private FileStorageService fileStorageService;
 
 	public void vaccineBooking(VaccineRegistration vaccineReg, MultipartFile file) {
 		// TODO Auto-generated method stub
@@ -65,13 +69,15 @@ public class VaccineBookingService {
 			logger.info("Successfully fetched doctor details having reg no :: [{}] with doctor id :: [{}]",
 					persistedDoc.getRegNo(), persistedDoc.getId());
 			logger.info("Proceeding for booking of vaccine by the user :: [{}]", persistedUser.get().getId());
-			Random random = new Random();
-			long drand = (long) (random.nextDouble() * 10000000000L);
-			VaccineBooking vaccineBooking = new VaccineBooking(file.getBytes(), "PENDING",
-					persistedUser.get().getFirstname() + "_" + persistedUser.get().getLastname() + "_" + drand);
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = new Date();
+			String dateToString = formatter.format(date);
+			VaccineBooking vaccineBooking = new VaccineBooking("PENDING", dateToString);
 			vaccineBooking.setUser(persistedUser.get());
 			vaccineBooking.setDoctor(persistedDoc);
 			vaccineBooking.setVaccine(persistedVaccine);
+			FileDB persistedFile = fileStorageService.store(file);
+			vaccineBooking.setFileDb(persistedFile);
 			VaccineBooking persistedVaccineDetails = vaccineBookingDao.save(vaccineBooking);
 			logger.info("Successfully saved Vaccine Booking details with booking id :: [{}]",
 					persistedVaccineDetails.getBookingId());

@@ -6,6 +6,7 @@ package com.example.demo.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -21,6 +22,7 @@ import com.example.demo.dao.HospitalDao;
 import com.example.demo.dao.LocationDao;
 import com.example.demo.dao.RolesDao;
 import com.example.demo.dao.UserDao;
+import com.example.demo.dao.VaccineBookingDao;
 import com.example.demo.model.Auth;
 import com.example.demo.model.Doctor;
 import com.example.demo.model.DoctorRegistration;
@@ -29,6 +31,7 @@ import com.example.demo.model.Hospital;
 import com.example.demo.model.Location;
 import com.example.demo.model.Roles;
 import com.example.demo.model.User;
+import com.example.demo.model.VaccineBooking;
 
 /**
  * @author PRATAP
@@ -51,6 +54,8 @@ public class DoctorService {
 	private HospitalDao hospitalDao;
 	@Autowired
 	private UserDao userDao;
+	@Autowired
+	private VaccineBookingDao vaccineBookingDao;
 
 	public int registerDoctor(DoctorRegistration doctorRegData) {
 		// TODO Auto-generated method stub
@@ -137,6 +142,23 @@ public class DoctorService {
 			return doctorsList;
 		} catch (Exception ex) {
 			logger.error("Error occured while fetching the doctors by city :: [{}]", ex.getMessage());
+			throw new ResourceExistsException(ex.getMessage());
+		}
+	}
+
+	public Stream<VaccineBooking> fetchPendingApprovals(String userName) {
+		// TODO Auto-generated method stub
+		logger.info("In service, trying to fetch the pendring approvals for the doctor with username :: [{}]",
+				userName);
+		try {
+			Auth auth = authDao.findByUsername(userName).get();
+			logger.info("Successfully fetched auth details for the doctor and id is :: [{}]", auth.getId());
+			Doctor doctor = docterDao.findByAuth(auth);
+			logger.info("Successfully fetched doctor details for the doctor and the doctor id is :: [{}]",
+					doctor.getId());
+			return  vaccineBookingDao.findByDoctor(doctor).stream();
+		} catch (Exception ex) {
+			logger.error("Error occured while fetching the pending approvals by the doctor :: [{}]", ex.getMessage());
 			throw new ResourceExistsException(ex.getMessage());
 		}
 	}

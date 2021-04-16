@@ -32,7 +32,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.csrf().disable().cors().and().authorizeRequests()
-				.antMatchers("/user/registeruser","/doctor/getDoctorsByCity", "/user/vaccineBooking","/websocket/**","/app/**","/chatapp/**","/fetch/**", "/doctor/registerdoctor", "/authenticate/login", "/v2/api-docs",
+				.antMatchers("/fc/**","/user/registeruser", "/doctor/getDoctorsByCity", "/doctor/pendingApprovals/**",
+						"/user/vaccineBooking", "/websocket/**", "/app/**",
+						"/chatapp/**", "/fetch/**", "/doctor/registerdoctor", "/authenticate/login", "/v2/api-docs",
 						"/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html",
 						"/webjars/**")
 				.permitAll().anyRequest().authenticated().and().sessionManagement()
