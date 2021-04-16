@@ -45,9 +45,6 @@ public class UserRegistrationService {
 		if (userdao.existsByContactno(user.getContactno()))
 			throw new ResourceExistsException("Contact number already exists");
 
-		if (authdao.existsByPassword(auth.getPassword()))
-			throw new ResourceExistsException("Password already exists");
-
 		if (authdao.existsByUsername(auth.getUsername()))
 			throw new ResourceExistsException("Username already exists");
 
