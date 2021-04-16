@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Exception.Details;
-import com.example.demo.model.AuthenticationResponse;
-import com.example.demo.model.LoginCredentials;
-import com.example.demo.model.VaccineRegistration;
+import com.example.demo.message.ResponseMessage;
 import com.example.demo.model.UserRegistration;
-import com.example.demo.service.AuthenticationService;
+import com.example.demo.model.VaccineRegistration;
 import com.example.demo.service.UserRegistrationService;
 import com.example.demo.service.VaccineBookingService;
 
@@ -36,9 +34,9 @@ public class UserController {
 	@Autowired
 	private UserRegistrationService service;
 
-	@Autowired
-	private AuthenticationService userAuthenticationService;
-	
+//	@Autowired
+//	private AuthenticationService userAuthenticationService;
+
 	@Autowired
 	private VaccineBookingService vaccineBookingService;
 
@@ -52,29 +50,32 @@ public class UserController {
 
 	}
 
-	@RequestMapping("/dashboard")
-	@ApiOperation(value = "API for rendering user dashboard", response = Details.class)
-	public ResponseEntity<Details> dashboard() {
-		Details details = new Details(new Date(), "dasboard works", "/user/dashboard");
-		return new ResponseEntity<Details>(details, HttpStatus.OK);
-	}
+//	@RequestMapping("/dashboard")
+//	@ApiOperation(value = "API for rendering user dashboard", response = Details.class)
+//	public ResponseEntity<Details> dashboard() {
+//		Details details = new Details(new Date(), "dasboard works", "/user/dashboard");
+//		return new ResponseEntity<Details>(details, HttpStatus.OK);
+//	}
 
 	@RequestMapping(value = "/vaccineBooking", method = RequestMethod.POST)
 	@ApiOperation(value = "API for application of booking of Vaccine by user", response = Details.class)
-	public ResponseEntity<?> vaccineBooking(@RequestParam(name = "file", required = true) MultipartFile file,
+	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file,
 			@RequestParam(name = "username", required = true) String userName,
 			@RequestParam(name = "vaccineName", required = true) String vaccineName,
 			@RequestParam(name = "docRegNo", required = true) String docRegNo) {
+		String message = "";
 		logger.info("Proceeding with storing the file uploaded by the user :: [{}] with file name : [{}]", userName,
 				file.getOriginalFilename());
 		try {
 			VaccineRegistration vaccineReg = new VaccineRegistration(userName, vaccineName, docRegNo);
 			vaccineBookingService.vaccineBooking(vaccineReg, file);
+			message = "Uploaded the file successfully: " + file.getOriginalFilename()
+					+ ". Vaccine Booking Done and Waiting for approval";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
 		} catch (Exception ex) {
-			logger.error("Exception occured while storing the file :: [{}]", ex.getMessage());
-			Details details = new Details(new Date(), "File Upload Failed", "/user/vaccineBooking");
-			return new ResponseEntity<Details>(details, HttpStatus.REQUEST_TIMEOUT);
+			logger.error("Exception occured while uploading the file ::[{}]", ex.getMessage());
+			message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(ex.getMessage()));
 		}
-		return null;
 	}
 }

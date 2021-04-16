@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,9 +23,6 @@ public class VaccineBooking {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int bookingId;
-	
-	@Column(nullable = false, unique = true)
-	private String fileId;
 
 	@OneToOne
 	@JoinColumn(name = "uid", nullable = false)
@@ -35,27 +31,28 @@ public class VaccineBooking {
 	@OneToOne
 	@JoinColumn(name = "did", nullable = false)
 	private Doctor doctor;
-	
+
 	@OneToOne
 	@JoinColumn(name = "vid", nullable = false)
 	private Vaccine vaccine;
-	
-	@Lob
-	@Column(name = "file", nullable = false)
-	private byte[] file;
-	
+
+	@OneToOne
+	@JoinColumn(name = "fileId", nullable = false)
+	private FileDB fileDb;
+
 	@Column(nullable = false)
 	private String status;
+
+	@Column(nullable = false)
+	private String bookingDate;
 
 	public VaccineBooking() {
 		super();
 	}
 
-	public VaccineBooking(byte[] file, String status, String fileId) {
-		super();
-		this.file = file;
+	public VaccineBooking(String status, String bookingDate) {
 		this.status = status;
-		this.fileId = fileId;
+		this.bookingDate = bookingDate;
 	}
 
 	public int getBookingId() {
@@ -90,14 +87,6 @@ public class VaccineBooking {
 		this.vaccine = vaccine;
 	}
 
-	public byte[] getFile() {
-		return file;
-	}
-
-	public void setFile(byte[] file) {
-		this.file = file;
-	}
-
 	public String getStatus() {
 		return status;
 	}
@@ -106,11 +95,20 @@ public class VaccineBooking {
 		this.status = status;
 	}
 
-	public String getFileId() {
-		return fileId;
+	public FileDB getFileDb() {
+		return fileDb;
 	}
 
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
-	}	
+	public void setFileDb(FileDB fileDb) {
+		this.fileDb = fileDb;
+	}
+
+	public String getBookingDate() {
+		return bookingDate;
+	}
+
+	public void setBookingDate(String bookingDate) {
+		this.bookingDate = bookingDate;
+	}
+
 }
