@@ -72,7 +72,7 @@ public class VaccineBookingService {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = new Date();
 			String dateToString = formatter.format(date);
-			VaccineBooking vaccineBooking = new VaccineBooking("PENDING", dateToString);
+			VaccineBooking vaccineBooking = new VaccineBooking("PENDING", java.sql.Date.valueOf(dateToString));
 			vaccineBooking.setUser(persistedUser.get());
 			vaccineBooking.setDoctor(persistedDoc);
 			vaccineBooking.setVaccine(persistedVaccine);
