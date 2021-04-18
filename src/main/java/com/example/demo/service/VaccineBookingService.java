@@ -68,6 +68,15 @@ public class VaccineBookingService {
 			Doctor persistedDoc = doctorDao.findByRegNo(vaccineReg.getDocRegNo());
 			logger.info("Successfully fetched doctor details having reg no :: [{}] with doctor id :: [{}]",
 					persistedDoc.getRegNo(), persistedDoc.getId());
+			logger.info(
+					"Checking whether any booking related to user id :: [{}] and vaccine id :: [{}] exists",
+					persistedUser.get().getId(), persistedVaccine.getId());
+			Optional<VaccineBooking> status = vaccineBookingDao.checkStatus(persistedUser.get().getId().intValue(),
+					persistedVaccine.getId().intValue());
+			if (status.isPresent() && status.get().getStatus().equals("PENDING")) {
+				logger.info("Already a booking is pending, cannot proceed for a new booking");
+				throw new Exception("Already a booking from this user name for the provided vaccine is pending.");
+			}
 			logger.info("Proceeding for booking of vaccine by the user :: [{}]", persistedUser.get().getId());
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = new Date();

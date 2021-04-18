@@ -59,7 +59,7 @@ public class UserController {
 
 	@RequestMapping(value = "/vaccineBooking", method = RequestMethod.POST)
 	@ApiOperation(value = "API for application of booking of Vaccine by user", response = Details.class)
-	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file,
+	public ResponseEntity<ResponseMessage> uploadFile(@RequestParam(name="file",required=true) MultipartFile file,
 			@RequestParam(name = "username", required = true) String userName,
 			@RequestParam(name = "vaccineName", required = true) String vaccineName,
 			@RequestParam(name = "docRegNo", required = true) String docRegNo) {

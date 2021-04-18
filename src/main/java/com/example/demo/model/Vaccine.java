@@ -26,8 +26,6 @@ public class Vaccine {
 	@ManyToMany
 	@JoinTable(name = "vaccine_hospital", joinColumns = @JoinColumn(name = "vid"), inverseJoinColumns = @JoinColumn(name = "hid"))
 	private List<Hospital> hospital;
-	
-	
 
 	public Vaccine() {
 		super();
