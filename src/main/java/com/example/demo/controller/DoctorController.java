@@ -3,6 +3,7 @@
  */
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.demo.Exception.Details;
+import com.example.demo.model.AppointmentRequest;
+import com.example.demo.model.Auth;
 import com.example.demo.model.DoctorRegistration;
 import com.example.demo.model.DoctorResponse;
+import com.example.demo.model.Hospital;
+import com.example.demo.model.HospitalResponse;
 import com.example.demo.model.ResponseFile;
 import com.example.demo.service.DoctorService;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * @author PRATAP
@@ -95,17 +101,58 @@ public class DoctorController {
 						dbFile.getBookingDate(), dbFile.getStatus(), dbFile.getUser().getAuth().getUsername(),
 						dbFile.getVaccine().getDosage());
 			}).collect(Collectors.toList());
-			int i = 0;
+			List<ResponseFile> pendingFiles =new ArrayList<ResponseFile>();
 			for (ResponseFile file : files) {
-				if (!file.getStatus().equalsIgnoreCase("Pending")) {
-					files.remove(i);
+				if (file.getStatus().equalsIgnoreCase("Pending")) {
+					pendingFiles.add(file);
 				}
-				i++;
 			}
-			return ResponseEntity.status(HttpStatus.OK).body(files);
+			return ResponseEntity.status(HttpStatus.OK).body(pendingFiles);
 		} catch (Exception ex) {
 			logger.error("Exception occured while persisting Doctor data :: [{}]", ex.getMessage());
 			Details details = new Details(new Date(), ex.getMessage(), "/doctor/getPendingApprovals/{username}");
+			return new ResponseEntity<Details>(details, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	@RequestMapping(value = "/checkAvailability", method = RequestMethod.GET)
+	@ApiOperation(value = "API for checking all the doctor's hospitals where he is working and the vaccine is available")
+	public ResponseEntity<?> checkAvailability(
+			@ApiParam(value = "The identifier of the doctor") @RequestParam(value = "userName", required = true) String doctorUserName,
+			@ApiParam(value = "The identifier of the vaccine") @RequestParam(value = "vaccine", required = true) String vaccineName) {
+		logger.info(
+				"Proceeding to check whether the hospitals where the doctor ::[{}] works, the vaccine ::[{}] is available or not",
+				doctorUserName, vaccineName);
+		try {
+			Auth auth = new Auth();
+			auth.setUsername(doctorUserName);
+			List<Hospital> hospitals = doctorService.checkAvailability(auth, vaccineName);
+			List<HospitalResponse> hospitalResponse = hospitals.stream().map(hosp -> {
+				return new HospitalResponse(hosp.getId(), hosp.getName());
+			}).collect(Collectors.toList());
+			return new ResponseEntity<List<HospitalResponse>>(hospitalResponse, HttpStatus.OK);
+		} catch (Exception ex) {
+			logger.error(
+					"Exception occured while checking availability of the vaccines in the hospital where the corresponding doctor works :: [{}]",
+					ex.getMessage());
+			Details details = new Details(new Date(), ex.getMessage(), "/doctor/checkAvailability");
+			return new ResponseEntity<Details>(details, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	@RequestMapping(value = "/vaccineAppointment", method = RequestMethod.POST)
+	@ApiOperation(value = "API for the appointment request approved or rejected by the doctor")
+	public ResponseEntity<?> provideAppointment(
+			@ApiParam("The request body for appointment approval or rejection") @RequestBody(required = true) AppointmentRequest appointment) {
+		logger.info("Proceeding to check the appointment request by the doctor whether approved ::[{}]",
+				appointment.getApproved());
+		try {
+			String message = doctorService.provideAppointment(appointment);
+			Details details = new Details(new Date(), message, "/doctor/vaccineAppointment");
+			return new ResponseEntity<Details>(details, HttpStatus.ACCEPTED);
+		} catch (Exception ex) {
+			logger.error("Exception occured while appointment transacion :: [{}]", ex.getMessage());
+			Details details = new Details(new Date(), ex.getMessage(), "/doctor/vaccineAppointment");
 			return new ResponseEntity<Details>(details, HttpStatus.EXPECTATION_FAILED);
 		}
 	}

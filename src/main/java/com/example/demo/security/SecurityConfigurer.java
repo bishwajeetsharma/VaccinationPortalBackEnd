@@ -32,11 +32,11 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.csrf().disable().cors().and().authorizeRequests()
-				.antMatchers("/fc/**","/user/registeruser", "/doctor/getDoctorsByCity", "/doctor/pendingApprovals/**",
-						"/user/vaccineBooking", "/websocket/**", "/app/**",
-						"/chatapp/**", "/fetch/**", "/doctor/registerdoctor", "/authenticate/login", "/v2/api-docs",
-						"/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html",
-						"/webjars/**")
+				.antMatchers("/fc/**", "/user/registeruser", "/doctor/getDoctorsByCity", "/doctor/pendingApprovals/**",
+						"/doctor//vaccineAppointment", "/doctor/checkAvailability", "/user/vaccineBooking",
+						"/websocket/**", "/app/**", "/chatapp/**", "/fetch/**", "/doctor/registerdoctor",
+						"/authenticate/login", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
+						"/configuration/security", "/swagger-ui.html", "/webjars/**")
 				.permitAll().anyRequest().authenticated().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
