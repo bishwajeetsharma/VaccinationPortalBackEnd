@@ -17,7 +17,9 @@ public interface VaccineDao extends CrudRepository<Vaccine, Integer> {
 	public static final String FETCH_VACCINES = "SELECT name FROM vaccine";
 
 	public Vaccine findByName(String name);
-
+  
 	@Query(value = FETCH_VACCINES, nativeQuery = true)
 	public Iterable<String> fetchVaccines();
+	
+	public boolean existsByName(String name);
 }
