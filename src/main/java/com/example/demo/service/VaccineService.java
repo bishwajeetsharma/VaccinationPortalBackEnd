@@ -12,6 +12,7 @@ import com.example.demo.dao.HospitalDao;
 import com.example.demo.dao.VaccineDao;
 import com.example.demo.model.Hospital;
 import com.example.demo.model.Vaccine;
+import com.example.demo.model.VaccineDetail;
 
 @Service
 @Transactional
@@ -56,5 +57,29 @@ public class VaccineService {
 			hospitaldao.save(hospital.get());
 		}
 
+	}
+
+	public List<VaccineDetail> fetchVaccineByHid(Integer hid) {
+		Optional<Hospital> hospital = hospitaldao.findById(hid);
+		List<Vaccine> vaccinelist = hospital.get().getVaccine();
+		List<VaccineDetail> vlist = new ArrayList<>();
+		for (Vaccine v : vaccinelist) {
+			vlist.add(new VaccineDetail(v.getName(), v.getId().intValue(), v.getDosage()));
+		}
+		return vlist;
+	}
+
+	public void deleteVaccine(int hid, int vid) {
+
+		Optional<Hospital> hospital = hospitaldao.findById(Integer.valueOf(hid));
+		Optional<Vaccine> vaccine = vaccinedao.findById(Integer.valueOf(vid));
+		List<Hospital> hospital_list = vaccine.get().getHospital();
+		hospital_list.remove(hospital.get());
+		vaccine.get().setHospital(hospital_list);
+		vaccinedao.save(vaccine.get());
+		List<Vaccine> vaccine_list = hospital.get().getVaccine();
+		vaccine_list.remove(vaccine.get());
+		hospital.get().setVaccine(vaccine_list);
+		hospitaldao.save(hospital.get());
 	}
 }

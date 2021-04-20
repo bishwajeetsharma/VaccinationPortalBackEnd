@@ -20,7 +20,7 @@ import com.example.demo.model.Location;
 public interface HospitalDao extends CrudRepository<Hospital, Integer> {
 
 	public Hospital findByNameAndLocation(String name, Location loc);
-	public static final String FETCH_HOSPITAL="SELECT id,name FROM hospital";
+	public static final String FETCH_HOSPITAL="SELECT id,name FROM hospital WHERE lid=?1";
 	@Query(value=FETCH_HOSPITAL,nativeQuery=true)
-	public List<Object[]>fetchHospitals();
+	public List<Object[]>fetchHospitals(int id);
 }

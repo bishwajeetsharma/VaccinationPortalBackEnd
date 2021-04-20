@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jdt.internal.compiler.codegen.IntegerCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.message.ResponseMessage;
+import com.example.demo.model.DeleteVaccine;
+import com.example.demo.model.Vaccine;
 import com.example.demo.model.VaccineDetail;
 import com.example.demo.service.VaccineService;
 
@@ -46,5 +50,24 @@ public class VaccineController {
 				vaccinedetail.getVaccineName(), vaccinedetail.getHid(), vaccinedetail.getDosage());
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Vaccine Registered!"));
 
+	}
+
+	@RequestMapping("/fetchVaccinebyHid")
+	public List<VaccineDetail> fetchVaccineByHid(@RequestParam("hospitalId") String hospitalId) throws Exception {
+		Integer hid = Integer.valueOf(Integer.parseInt(hospitalId));
+		if (vaccineservice.fetchVaccineByHid(hid).isEmpty())
+			throw new Exception("No vaccines are available at this hospital");
+		else
+			return vaccineservice.fetchVaccineByHid(hid);
+	}
+
+	@PostMapping("/deleteVaccine")
+	public ResponseEntity<ResponseMessage> deleteVaccine(@RequestBody DeleteVaccine deletevaccine) {
+		try {
+			vaccineservice.deleteVaccine(deletevaccine.getHid(), deletevaccine.getVid());
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(ex.getMessage()));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Operation successful."));
 	}
 }
