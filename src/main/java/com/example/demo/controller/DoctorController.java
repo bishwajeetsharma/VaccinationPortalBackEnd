@@ -89,7 +89,7 @@ public class DoctorController {
 	@ApiOperation(value = "API for fetching all the pending booking requests for a specific doctor's username")
 	public ResponseEntity<?> getPendingApprovalsByDoctor(
 			@PathVariable(name = "username", required = true) String userName) {
-		logger.info("Fetching all the pending booking request for the doctor having username :: [{}]", userName);
+		logger.info("Fetching all the PENDING booking request for the doctor having username :: [{}]", userName);
 		try {
 			List<ResponseFile> files = doctorService.fetchPendingApprovals(userName).map(dbFile -> {
 				String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/fc/files/")
@@ -101,7 +101,7 @@ public class DoctorController {
 						dbFile.getBookingDate(), dbFile.getStatus(), dbFile.getUser().getAuth().getUsername(),
 						dbFile.getVaccine().getDosage());
 			}).collect(Collectors.toList());
-			List<ResponseFile> pendingFiles =new ArrayList<ResponseFile>();
+			List<ResponseFile> pendingFiles = new ArrayList<ResponseFile>();
 			for (ResponseFile file : files) {
 				if (file.getStatus().equalsIgnoreCase("Pending")) {
 					pendingFiles.add(file);
@@ -153,6 +153,66 @@ public class DoctorController {
 		} catch (Exception ex) {
 			logger.error("Exception occured while appointment transacion :: [{}]", ex.getMessage());
 			Details details = new Details(new Date(), ex.getMessage(), "/doctor/vaccineAppointment");
+			return new ResponseEntity<Details>(details, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	@RequestMapping(value = "/approvedApprovals/{username}", method = RequestMethod.GET)
+	@ApiOperation(value = "API for fetching all the approved booking requests for a specific doctor's username")
+	public ResponseEntity<?> getApprovedApprovalsByDoctor(
+			@PathVariable(name = "username", required = true) String userName) {
+		logger.info("Fetching all the APPROVED booking request for the doctor having username :: [{}]", userName);
+		try {
+			List<ResponseFile> files = doctorService.fetchPendingApprovals(userName).map(dbFile -> {
+				String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/fc/files/")
+						.path(dbFile.getFileDb().getId()).toUriString();
+
+				return new ResponseFile(dbFile.getBookingId(), dbFile.getFileDb().getName(), fileDownloadUri,
+						dbFile.getFileDb().getType(), dbFile.getFileDb().getData().length,
+						dbFile.getUser().getFirstname(), dbFile.getUser().getLastname(), dbFile.getVaccine().getName(),
+						dbFile.getBookingDate(), dbFile.getStatus(), dbFile.getUser().getAuth().getUsername(),
+						dbFile.getVaccine().getDosage());
+			}).collect(Collectors.toList());
+			List<ResponseFile> pendingFiles = new ArrayList<ResponseFile>();
+			for (ResponseFile file : files) {
+				if (file.getStatus().equalsIgnoreCase("APPROVED")) {
+					pendingFiles.add(file);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(pendingFiles);
+		} catch (Exception ex) {
+			logger.error("Exception occured while searching APPROVED approvals :: [{}]", ex.getMessage());
+			Details details = new Details(new Date(), ex.getMessage(), "/doctor/getPendingApprovals/{username}");
+			return new ResponseEntity<Details>(details, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	@RequestMapping(value = "/rejectedApprovals/{username}", method = RequestMethod.GET)
+	@ApiOperation(value = "API for fetching all the approved booking requests for a specific doctor's username")
+	public ResponseEntity<?> getRejectedApprovalsByDoctor(
+			@PathVariable(name = "username", required = true) String userName) {
+		logger.info("Fetching all the REJECTED booking request for the doctor having username :: [{}]", userName);
+		try {
+			List<ResponseFile> files = doctorService.fetchPendingApprovals(userName).map(dbFile -> {
+				String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/fc/files/")
+						.path(dbFile.getFileDb().getId()).toUriString();
+
+				return new ResponseFile(dbFile.getBookingId(), dbFile.getFileDb().getName(), fileDownloadUri,
+						dbFile.getFileDb().getType(), dbFile.getFileDb().getData().length,
+						dbFile.getUser().getFirstname(), dbFile.getUser().getLastname(), dbFile.getVaccine().getName(),
+						dbFile.getBookingDate(), dbFile.getStatus(), dbFile.getUser().getAuth().getUsername(),
+						dbFile.getVaccine().getDosage());
+			}).collect(Collectors.toList());
+			List<ResponseFile> pendingFiles = new ArrayList<ResponseFile>();
+			for (ResponseFile file : files) {
+				if (file.getStatus().equalsIgnoreCase("REJECTED")) {
+					pendingFiles.add(file);
+				}
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(pendingFiles);
+		} catch (Exception ex) {
+			logger.error("Exception occured while searching REJECTED approvals :: [{}]", ex.getMessage());
+			Details details = new Details(new Date(), ex.getMessage(), "/doctor/getPendingApprovals/{username}");
 			return new ResponseEntity<Details>(details, HttpStatus.EXPECTATION_FAILED);
 		}
 	}
