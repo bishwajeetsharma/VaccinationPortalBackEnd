@@ -40,6 +40,7 @@ import com.example.demo.model.User;
 import com.example.demo.model.Vaccine;
 import com.example.demo.model.VaccineBooking;
 import com.example.demo.utils.Constants;
+import com.example.demo.utils.Mail;
 
 /**
  * @author PRATAP
@@ -259,6 +260,8 @@ public class DoctorService {
 				message = "Vaccination appointment has been provided. Thank you for your kind assistance";
 				String approvedMessage = String.format(Constants.approvedMessage, appointment.getVaccineName(),
 						appointmentDate, appointmentTime, hospitalName);
+				Mail.sendMail(new String[] { appointment.getUserName() }, "Vaccination Request Approved",
+						approvedMessage);
 				logger.info("Approved mail sent for vaccination :: [{}]", approvedMessage);
 			} else {
 				status = "REJECTED";
@@ -275,8 +278,8 @@ public class DoctorService {
 				message = "Vaccination request has been rejected. Thank you for your assistance";
 				String rejectMessage = String.format(Constants.rejectMessage, appointment.getVaccineName(),
 						appointment.getComments());
-//				Mail.sendMail(new String[] { appointment.getUserName() }, "Vaccination Request Declined",
-//						rejectMessage);
+				Mail.sendMail(new String[] { appointment.getUserName() }, "Vaccination Request Declined",
+						rejectMessage);
 				logger.info("Rejection mail send successfully to user :: [{}] with message :: [{}]",
 						appointment.getUserName(), rejectMessage);
 			}

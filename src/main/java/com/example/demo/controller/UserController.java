@@ -75,7 +75,7 @@ public class UserController {
 		} catch (Exception ex) {
 			logger.error("Exception occured while uploading the file ::[{}]", ex.getMessage());
 			message = "Could not upload the file: " + file.getOriginalFilename() + "!";
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(ex.getMessage()));
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
 		}
 	}
 }
