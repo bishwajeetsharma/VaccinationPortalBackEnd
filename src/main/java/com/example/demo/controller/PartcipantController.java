@@ -11,7 +11,7 @@ import com.example.demo.model.ChatPartcipant;
 import com.example.demo.service.ChatPartcipantService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/fetch")
 public class PartcipantController {
 
@@ -19,13 +19,13 @@ public class PartcipantController {
 	private ChatPartcipantService chatparticipantservice;
 
 	@RequestMapping("/doctor")
-	@CrossOrigin
+	@CrossOrigin("*")
 	public List<ChatPartcipant> fetchUsers() {
 		return (List<ChatPartcipant>) chatparticipantservice.fetchUsers();
 	}
 
 	@RequestMapping("/user")
-	@CrossOrigin
+	@CrossOrigin("*")
 	public List<ChatPartcipant> fetchDoctors() {
 		return (List<ChatPartcipant>) chatparticipantservice.fetchDoctors();
 	}

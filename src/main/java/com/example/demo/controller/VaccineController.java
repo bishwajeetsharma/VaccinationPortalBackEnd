@@ -23,7 +23,7 @@ import com.example.demo.service.VaccineService;
 
 @RestController
 @RequestMapping("/vaccine")
-@CrossOrigin
+@CrossOrigin("*")
 public class VaccineController {
 
 	private static final Logger logger = LogManager.getLogger(UserController.class);

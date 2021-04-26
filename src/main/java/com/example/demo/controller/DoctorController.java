@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping("/doctor")
-@CrossOrigin
+@CrossOrigin("*")
 public class DoctorController {
 
 	private static final Logger logger = LogManager.getLogger(DoctorController.class);

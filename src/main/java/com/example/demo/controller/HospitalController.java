@@ -13,7 +13,7 @@ import com.example.demo.service.HospitalService;
 
 @RestController
 @RequestMapping("/hospital")
-@CrossOrigin
+@CrossOrigin("*")
 public class HospitalController {
 
 	@Autowired

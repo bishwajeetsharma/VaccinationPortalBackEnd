@@ -27,7 +27,7 @@ public class ChatController {
 	private SimpMessagingTemplate simpmessagingtemplate;
 
 	@MessageMapping("/message")
-	@CrossOrigin
+	@CrossOrigin("*")
 	public void sendMessage(Message<ChatMessage> message) {
 		ChatMessage msg = message.getPayload();
 		System.out.println("message received");
@@ -36,7 +36,7 @@ public class ChatController {
 	}
 
 	@PostMapping("/messagehistory")
-	@CrossOrigin
+	@CrossOrigin("*")
 	public @ResponseBody List<ChatMessage> fetchAllMessages(@RequestBody MessageRequest messageRequest) {
 		System.out.println("fetching messages");
 		return chatservice.fetchAllMessages(messageRequest);

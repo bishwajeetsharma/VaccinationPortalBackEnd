@@ -16,7 +16,7 @@ import com.example.demo.service.AuthenticationService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/authenticate")
 public class LoginController {
 
@@ -24,7 +24,7 @@ public class LoginController {
 	private AuthenticationService authenticationService;
 	@PostMapping("/login")
 	@ApiOperation(value = "API for authentication and logging", response = ResponseEntity.class)
-	@CrossOrigin
+	@CrossOrigin("*")
 	public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginCredentials credentials) throws Exception {
 		AuthenticationResponse response = authenticationService.createAuthenticationToken(credentials);
 		return new ResponseEntity<AuthenticationResponse>(response, HttpStatus.OK);
