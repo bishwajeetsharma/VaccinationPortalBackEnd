@@ -5,9 +5,11 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import com.example.demo.dao.RolesDao;
 import com.example.demo.model.Roles;
@@ -20,18 +22,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
+@EnableAutoConfiguration
 public class Demo2Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Demo2Application.class, args);
+		populateRolesTable();
 	}
 
 	@Autowired
-	private RolesDao rolesdao;
+	private static RolesDao rolesdao;
 
-	@Bean
 	@Transactional
-	public void populateRolesTable() {
+	public static void populateRolesTable() {
 		Roles role1 = new Roles("admin");
 		Roles role2 = new Roles("doctor");
 		Roles role3 = new Roles("user");
