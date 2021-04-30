@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Hospital {
@@ -27,8 +30,10 @@ public class Hospital {
 	private List<Doctor> doctor;
 
 	// many to many mapping with vaccine
-	@ManyToMany(mappedBy = "hospital")
-	private List<Vaccine> vaccine;
+//	@ManyToMany(mappedBy = "hospital")
+//	private List<Vaccine> vaccine;
+	@OneToMany(mappedBy = "hid", cascade = CascadeType.ALL)
+    private List<VaccineHospital> vaccineHospital = new ArrayList<>();
 
 	// many to one mapping with location
 	@ManyToOne
@@ -36,16 +41,16 @@ public class Hospital {
 	private Location location;
 
 	// getters and setters
-	public List<Vaccine> getVaccine() {
-		return vaccine;
-	}
-
-	public void setVaccine(List<Vaccine> vaccine) {
-		this.vaccine = vaccine;
-	}
-
 	public List<Doctor> getDoctor() {
 		return doctor;
+	}
+
+	public List<VaccineHospital> getVaccineHospital() {
+		return vaccineHospital;
+	}
+
+	public void setVaccineHospital(List<VaccineHospital> vaccineHospital) {
+		this.vaccineHospital = vaccineHospital;
 	}
 
 	public void setDoctor(List<Doctor> doctor) {

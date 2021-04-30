@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,9 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Vaccine {
@@ -24,9 +23,11 @@ public class Vaccine {
 	private Integer dosage;
 
 	// many to many mapping with hospital
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "vaccine_hospital", joinColumns = @JoinColumn(name = "vid"), inverseJoinColumns = @JoinColumn(name = "hid"))
-	private List<Hospital> hospital;
+//	@ManyToMany(cascade = CascadeType.ALL)
+//	@JoinTable(name = "vaccine_hospital", joinColumns = @JoinColumn(name = "vid"), inverseJoinColumns = @JoinColumn(name = "hid"))
+//	private List<Hospital> hospital;
+	@OneToMany(mappedBy = "vid", cascade = CascadeType.ALL)
+	private List<VaccineHospital> vaccineHospital;
 
 	public Vaccine() {
 		super();
@@ -39,12 +40,12 @@ public class Vaccine {
 		this.dosage = dosage;
 	}
 
-	public List<Hospital> getHospital() {
-		return hospital;
+	public List<VaccineHospital> getVaccineHospital() {
+		return vaccineHospital;
 	}
 
-	public void setHospital(List<Hospital> hospital) {
-		this.hospital = hospital;
+	public void setVaccineHospital(List<VaccineHospital> vaccineHospital) {
+		this.vaccineHospital = vaccineHospital;
 	}
 
 	public Integer getId() {

@@ -5,6 +5,7 @@ public class VaccineDetail {
 	private String vaccineName;
 	private int hid;
 	private int dosage;
+	private int noOfVaccines;
 
 	public String getVaccineName() {
 		return vaccineName;
@@ -30,11 +31,20 @@ public class VaccineDetail {
 		this.dosage = dosage;
 	}
 
-	public VaccineDetail(String vaccineName, int hid, int dosage) {
+	public int getNoOfVaccines() {
+		return noOfVaccines;
+	}
+
+	public void setNoOfVaccines(int noOfVaccines) {
+		this.noOfVaccines = noOfVaccines;
+	}
+
+	public VaccineDetail(String vaccineName, int hid, int dosage, int noOfVaccines) {
 		super();
 		this.vaccineName = vaccineName;
 		this.hid = hid;
 		this.dosage = dosage;
+		this.noOfVaccines = noOfVaccines;
 	}
 
 }
