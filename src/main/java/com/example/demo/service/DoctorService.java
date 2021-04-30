@@ -26,6 +26,7 @@ import com.example.demo.dao.RolesDao;
 import com.example.demo.dao.UserDao;
 import com.example.demo.dao.VaccineBookingDao;
 import com.example.demo.dao.VaccineDao;
+import com.example.demo.dao.VaccineHospitalDao;
 import com.example.demo.model.Appointment;
 import com.example.demo.model.AppointmentRequest;
 import com.example.demo.model.Auth;
@@ -39,6 +40,7 @@ import com.example.demo.model.Roles;
 import com.example.demo.model.User;
 import com.example.demo.model.Vaccine;
 import com.example.demo.model.VaccineBooking;
+import com.example.demo.model.VaccineHospital;
 import com.example.demo.utils.Constants;
 import com.example.demo.utils.Mail;
 
@@ -47,7 +49,7 @@ import com.example.demo.utils.Mail;
  *
  */
 @Service
-@Transactional
+@Transactional(rollbackOn = Exception.class)
 public class DoctorService {
 
 	private static final Logger logger = LogManager.getLogger(DoctorService.class);
@@ -69,6 +71,8 @@ public class DoctorService {
 	private VaccineDao vaccineDao;
 	@Autowired
 	private AppointmentDao appointmentDao;
+	@Autowired
+	private VaccineHospitalDao vHDao;
 
 	public int registerDoctor(DoctorRegistration doctorRegData) {
 		// TODO Auto-generated method stub
@@ -187,9 +191,14 @@ public class DoctorService {
 			logger.info("The number of hospitals in which the doctor works :: [{}]", persistedHospitals.size());
 			List<Hospital> hospitals = new ArrayList<Hospital>();
 			for (Hospital hosp : persistedHospitals) {
-				List<Vaccine> vaccines = hosp.getVaccine();
+				List<Vaccine> vaccines = new ArrayList<Vaccine>();
+				for (VaccineHospital vh : hosp.getVaccineHospital()) {
+					if (vh.getVaccinesAvailable() > 0)
+						vaccines.add(vh.getVid());
+				}
 				boolean flag = false;
 				for (Vaccine vac : vaccines) {
+					System.out.println(vac.getName());
 					if (vac.getName().equalsIgnoreCase(vaccineName)) {
 						flag = true;
 						break;
@@ -230,6 +239,7 @@ public class DoctorService {
 			String hospitalName = null;
 			if (appointment.getApproved().equalsIgnoreCase("YES")) {
 				status = "APPROVED";
+				boolean appointFlag = false;
 				for (Dosage dosage : appointment.getDosages()) {
 					Date date = Date.valueOf(dosage.getDate());
 					String time = dosage.getTime();
@@ -237,32 +247,53 @@ public class DoctorService {
 					Hospital hospital = hospitalDao.findByNameAndLocation(dosage.getHospital(), loc);
 					Appointment persistAppointment = new Appointment(user, doctor, vaccine, hospital, dosageNo, time,
 							date, comments, status);
-					persistAppointment = appointmentDao.save(persistAppointment);
-					logger.info("Vaccination appointment has been provided with appointment id :: [{}]",
-							persistAppointment.getAppointmentId());
-					if (appointmentDate == null || appointmentTime.equalsIgnoreCase("")) {
-						appointmentDate = persistAppointment.getAppointmentDate();
-						appointmentTime = persistAppointment.getTime();
-						hospitalName = hospital.getName();
+					VaccineHospital vH = vHDao.findByHidAndVid(hospital, vaccine);
+					System.out.println("No of vaccines available = "+ vH.getVaccinesAvailable());
+					if (vH.getVaccinesAvailable() > 0) {
+						vH.setVaccinesAvailable(vH.getVaccinesAvailable() - 1);
+						logger.info(
+								"Updating the number of vaccines available in that hospital by reducing the number of dosages provided appointment for");
+						vHDao.save(vH);
+						logger.info(
+								"Successfully updated the number of vaccines in the hospital with hospital id :: [{}] and no of vaccines currently available is :: [{}]",
+								hospital.getId(), vH.getVaccinesAvailable());
+						persistAppointment = appointmentDao.save(persistAppointment);
+						logger.info("Vaccination appointment has been provided with appointment id :: [{}]",
+								persistAppointment.getAppointmentId());
+						if (appointmentDate == null || appointmentTime.equalsIgnoreCase("")) {
+							appointmentDate = persistAppointment.getAppointmentDate();
+							appointmentTime = persistAppointment.getTime();
+							hospitalName = hospital.getName();
+						}
+						appointFlag = true;
+					} else {
+						logger.info(
+								"No of Dosages exceed the vaccine availability in the hospital. Please try again later or try with different Hospital");
+						message = "No of Dosages exceed the vaccine availability in the hospital. Please try again later or try with different Hospital";
+						appointFlag = false;
+						throw new Exception(
+								"Partial Booking is not allowed. Happened due to unavailability of vaccine in some Hospital.Please try again later!");
 					}
 				}
-				logger.info("Appointment for all the dosages have been updated successfully.");
-				logger.debug("Proceeding to update the status for approval of vaccine booking.");
-				VaccineBooking vaccineBooking = vaccineBookingDao.findById(appointment.getBookingId()).get();
-				vaccineBooking.setStatus("APPROVED");
-				vaccineBookingDao.save(vaccineBooking);
-				logger.info("Vaccine Booking has been updated with the new status :: [{}] for the booking id ::[{}]",
-						vaccineBooking.getStatus(), vaccineBooking.getBookingId());
-				logger.info(
-						"Proceeding to send mail to the respective user for the corresponding appointment date :: [{}] and time :; [{}]",
-						appointmentDate, appointmentTime);
-//				Call mailing method to send Approval mail
-				message = "Vaccination appointment has been provided. Thank you for your kind assistance";
-				String approvedMessage = String.format(Constants.approvedMessage, appointment.getVaccineName(),
-						appointmentDate, appointmentTime, hospitalName);
-				Mail.sendMail(new String[] { appointment.getUserName() }, "Vaccination Request Approved",
-						approvedMessage);
-				logger.info("Approved mail sent for vaccination :: [{}]", approvedMessage);
+				if (appointFlag) {
+					logger.info("Appointment for all the dosages have been updated successfully.");
+					logger.debug("Proceeding to update the status for approval of vaccine booking.");
+					VaccineBooking vaccineBooking = vaccineBookingDao.findById(appointment.getBookingId()).get();
+					vaccineBooking.setStatus("APPROVED");
+					vaccineBookingDao.save(vaccineBooking);
+					logger.info(
+							"Vaccine Booking has been updated with the new status :: [{}] for the booking id ::[{}]",
+							vaccineBooking.getStatus(), vaccineBooking.getBookingId());
+					logger.info(
+							"Proceeding to send mail to the respective user for the corresponding appointment date :: [{}] and time :; [{}]",
+							appointmentDate, appointmentTime);
+					message = "Vaccination appointment has been provided. Thank you for your kind assistance";
+					String approvedMessage = String.format(Constants.approvedMessage, appointment.getVaccineName(),
+							appointmentDate, appointmentTime, hospitalName);
+					Mail.sendMail(new String[] { appointment.getUserName() }, "Vaccination Request Approved",
+							approvedMessage);
+					logger.info("Approved mail sent for vaccination :: [{}]", approvedMessage);
+				}
 			} else {
 				status = "REJECTED";
 				VaccineBooking vaccineBooking = vaccineBookingDao.findById(appointment.getBookingId()).get();
@@ -274,7 +305,6 @@ public class DoctorService {
 				logger.info(
 						"Proceeding to send mail to the respective user for the rejection of vaccine booking with comments :: [{}]",
 						appointment.getComments());
-//				Call mailing method to send Rejection mail
 				message = "Vaccination request has been rejected. Thank you for your assistance";
 				String rejectMessage = String.format(Constants.rejectMessage, appointment.getVaccineName(),
 						appointment.getComments());
