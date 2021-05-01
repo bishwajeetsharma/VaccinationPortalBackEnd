@@ -19,6 +19,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableSwagger2
@@ -41,6 +42,11 @@ public class Demo2Application {
 		rolesdao.save(role1);
 		rolesdao.save(role2);
 		rolesdao.save(role3);
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+	    return new RestTemplate();
 	}
 
 	@Bean
