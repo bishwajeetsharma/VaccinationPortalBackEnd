@@ -1,0 +1,48 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: springboot-service
+spec:
+  ports:
+    - port: 8085
+      targetPort: 8085
+  selector:
+    component: springboot-mysql-component
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-mysql
+spec:
+  selector:
+    matchLabels:
+      component: springboot-mysql-component
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: springboot-mysql-component
+    spec:
+      containers:
+        - name: springboot-mysql-component
+          image: satpal101070/springbootimage:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          env:
+          - name: DB_HOST
+            value: mysql-db
+          - name: DB_NAME
+            value: vaccinationdb
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mysqluser
+                key: MYSQLUSER
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysqlpass
+                key: MYSQLPASS
