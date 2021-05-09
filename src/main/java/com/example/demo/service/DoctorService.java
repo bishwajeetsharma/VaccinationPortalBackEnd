@@ -74,6 +74,16 @@ public class DoctorService {
 	@Autowired
 	private VaccineHospitalDao vHDao;
 
+	public DoctorService(DoctorDao doctorDao, AuthDao authDao, RolesDao rolesDao, LocationDao locationDao,
+			HospitalDao hospitalDao) {
+		// TODO Auto-generated constructor stub
+		this.docterDao = doctorDao;
+		this.authDao = authDao;
+		this.rolesDao = rolesDao;
+		this.locationDao = locationDao;
+		this.hospitalDao = hospitalDao;
+	}
+
 	public int registerDoctor(DoctorRegistration doctorRegData) {
 		// TODO Auto-generated method stub
 		int status = 0;
@@ -248,7 +258,7 @@ public class DoctorService {
 					Appointment persistAppointment = new Appointment(user, doctor, vaccine, hospital, dosageNo, time,
 							date, comments, status);
 					VaccineHospital vH = vHDao.findByHidAndVid(hospital, vaccine);
-					System.out.println("No of vaccines available = "+ vH.getVaccinesAvailable());
+					System.out.println("No of vaccines available = " + vH.getVaccinesAvailable());
 					if (vH.getVaccinesAvailable() > 0) {
 						vH.setVaccinesAvailable(vH.getVaccinesAvailable() - 1);
 						logger.info(
