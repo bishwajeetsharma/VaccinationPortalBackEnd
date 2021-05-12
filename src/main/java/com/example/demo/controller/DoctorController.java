@@ -49,6 +49,11 @@ public class DoctorController {
 	@Autowired
 	private DoctorService doctorService;
 
+	public DoctorController(DoctorService doctorService) {
+		// TODO Auto-generated constructor stub
+		this.doctorService = doctorService;
+	}
+
 	@RequestMapping(value = "/registerdoctor", method = RequestMethod.POST)
 	@ApiOperation(value = "API for Registering the Doctors to MRA portal", response = Details.class)
 	public ResponseEntity<Details> register(@RequestBody DoctorRegistration doctorRegData) {

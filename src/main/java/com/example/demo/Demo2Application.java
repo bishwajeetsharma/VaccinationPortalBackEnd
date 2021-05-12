@@ -9,7 +9,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.dao.RolesDao;
 import com.example.demo.model.Roles;
@@ -19,11 +20,11 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableSwagger2
 @EnableAutoConfiguration
+@EnableScheduling
 public class Demo2Application {
 
 	public static void main(String[] args) {
