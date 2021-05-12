@@ -33,25 +33,25 @@ public class Admin {
 		private Auth auth;
 		
 		//many to one mapping with location
-		@ManyToOne
-		@JoinColumn(name="lid",nullable=false)
-		private Location location;
+//		@ManyToOne
+//		@JoinColumn(name="lid",nullable=false)
+//		private Location location;
 	public Auth getAuth() {
 			return auth;
 		}
 		public void setAuth(Auth auth) {
 			this.auth = auth;
 		}
-		public Location getLocation() {
-			return location;
-		}
-		public void setLocation(Location location) {
-			this.location = location;
-		}
+//		public Location getLocation() {
+//			return location;
+//		}
+//		public void setLocation(Location location) {
+//			this.location = location;
+//		}
 	public Admin() {}
 	
 	public Admin(String firstname, String lastname, String gender, String dob, String contactno, String aadhar,
-			Auth auth, Location location) {
+			Auth auth) {
 		super();
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -60,7 +60,7 @@ public class Admin {
 		this.contactno = contactno;
 		this.aadhar = aadhar;
 		this.auth = auth;
-		this.location = location;
+//		this.location = location;
 	}
 	public Integer getId() {
 		return id;

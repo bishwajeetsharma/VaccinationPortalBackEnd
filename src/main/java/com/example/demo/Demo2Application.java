@@ -12,7 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.demo.dao.AdminDao;
+import com.example.demo.dao.AuthDao;
 import com.example.demo.dao.RolesDao;
+import com.example.demo.model.Admin;
+import com.example.demo.model.Auth;
 import com.example.demo.model.Roles;
 
 import springfox.documentation.builders.PathSelectors;
@@ -29,13 +33,19 @@ public class Demo2Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Demo2Application.class, args);
-		populateRolesTable();
+//		populateRolesTable();
+//		createAdmin();
 	}
 
 	@Autowired
 	private static RolesDao rolesdao;
 
-	@Transactional
+    @Autowired
+    private static AdminDao admindao;
+    @Autowired
+    private static AuthDao authdao;
+	
+    @Transactional
 	public static void populateRolesTable() {
 		Roles role1 = new Roles("admin");
 		Roles role2 = new Roles("doctor");
@@ -44,7 +54,13 @@ public class Demo2Application {
 		rolesdao.save(role2);
 		rolesdao.save(role3);
 	}
-	
+	@Transactional
+	public static void createAdmin() {
+		Auth auth=new Auth("admin@gmail.com","admin");
+		Auth persisted_auth=authdao.save(auth);
+		Admin admin=new Admin("Satpal","Singh","Male","1999-08-12","9747996321","748596000025",persisted_auth);
+		admindao.save(admin);
+	}
 	@Bean
 	public RestTemplate restTemplate() {
 	    return new RestTemplate();
