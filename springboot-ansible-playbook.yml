@@ -5,5 +5,5 @@
        copy:
         src: /opt/k8s-files/spring-deployment.yml
         dest: /opt/k8s
-     - name: create angular deployment
+     - name: create springboot deployment
        shell: kubectl apply -f /opt/k8s/spring-deployment.yml	  
