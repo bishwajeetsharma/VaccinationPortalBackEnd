@@ -97,7 +97,7 @@ public class DoctorController {
 		logger.info("Fetching all the PENDING booking request for the doctor having username :: [{}]", userName);
 		try {
 			List<ResponseFile> files = doctorService.fetchPendingApprovals(userName).map(dbFile -> {
-				String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/fc/files/")
+				String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/springboot/fc/files/")
 						.path(dbFile.getFileDb().getId()).toUriString();
 
 				return new ResponseFile(dbFile.getBookingId(), dbFile.getFileDb().getName(), fileDownloadUri,
